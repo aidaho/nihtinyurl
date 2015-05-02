@@ -3,8 +3,8 @@
 Local machine-specific settings.
 """
 import os
-from settings import BASE_DIR
 
+from settings import BASE_DIR
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
