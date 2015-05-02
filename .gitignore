@@ -1,0 +1,8 @@
+*.pyc
+.idea
+.project
+.pydevproject
+.settings
+.coverage
+htmlcov
+local_settings.py
