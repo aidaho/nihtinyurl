@@ -1,0 +1,12 @@
+{% extends 'nihtinyurl/base.html' %}
+{% load i18n %}
+
+{% block container %}
+<div class="row">
+  <div class="col-sm-6 col-sm-offset-3">
+    <h1>{% trans "Your URL have been tinified!" %}</h1>
+    <p>{% trans "Share this short URL with your friends:" %}</p>
+    <h3><a href="http://{{ request.META.HTTP_HOST }}/{{ object.keyword }}">http://{{ request.META.HTTP_HOST }}/{{ object.keyword }}</a></h3>
+  </div>
+</div>
+{% endblock %}

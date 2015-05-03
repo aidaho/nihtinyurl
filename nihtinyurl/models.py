@@ -29,11 +29,29 @@ class TimeStampedModel(models.Model):
 class Shortcut(ModelValidationMixin, TimeStampedModel):
     """A key, which can be used to represent stored long URL."""
     keyword = models.CharField(max_length=64, unique=True)
-    target = models.URLField(null=True)
+    """
+    HTTP/1.1 does not have any upper limit on URL length.
+    http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.2.1
+
+    Since we need to wrap this up somewhere, let's take the maximum
+    for IE and Safari.
+    """
+    target = models.URLField(null=True, max_length=2047)
     hits = models.IntegerField(default=0)
+
+    def __init__(self, *args, **kwargs):
+        super(Shortcut, self).__init__(*args, **kwargs)
+        # We are saving original target URL for tracking it's changes to reset hits
+        self._target_initial = self.target
 
     def __unicode__(self):
         return "{0} ({1}): {2}".format(self.keyword, self.hits, self.target)
+
+    def save(self, **kwargs):
+        # Reset hit counter on target URL update:
+        if self.target != self._target_initial:
+            self.hits = 0
+        super(Shortcut, self).save(**kwargs)
 
     @classmethod
     def get_keyword_filter_pattern(cls):
@@ -53,6 +71,10 @@ class Shortcut(ModelValidationMixin, TimeStampedModel):
         self.clean_keyword()
 
     def clean_keyword(self):
+        pattern = self.get_keyword_filter_pattern()
+        if pattern.match(self.keyword):
+            raise ValidationError("Keyword '%s' contains forbidden characters!" % self.keyword)
+
         if not self.pk:  # check new keyword for clash with site urlpatterns
             url_patterns = get_site_root_paths()
             if self.keyword in url_patterns:

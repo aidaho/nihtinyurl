@@ -7,12 +7,10 @@ Repeated invocation with duplicates is safe. Words are being slugified.
 from __future__ import absolute_import, unicode_literals
 
 import os
-import re
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.transaction import atomic
 
-from ... import urls
 from ...library import get_site_root_paths
 from ...models import Shortcut
 
@@ -59,6 +57,6 @@ class Command(BaseCommand):
             wordlist.close()
 
         self.stdout.write(
-            "\nImport complete. {imported} shortcuts imported, {ignored} "
+            "\nImport completed. {imported} shortcuts imported, {ignored} "
             "ignored, {duplicates} already in DB".format(**stats)
         )
