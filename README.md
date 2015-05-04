@@ -10,7 +10,7 @@ Which are:
 *   A decent attempt to use relevant keyword per supplied URL is made
 
 ### Installation
-    Activate your [virtualenv](https://virtualenv.pypa.io/) and run the following from the project root:
+Activate your [virtualenv](https://virtualenv.pypa.io/) and run the following from the project root:
 *   Install requirements: `pip install -r requirements/all.txt`
 *   Create DB: `./manage.py syncdb`
 *   Import some wordlist: `./manage.py import_shortcuts nihtinyurl/fixtures/words-tiny.txt`
