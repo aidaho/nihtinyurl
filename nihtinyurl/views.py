@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import F
 from django.http import HttpResponseRedirect
@@ -44,10 +43,9 @@ class HomePageView(TemplateView):
                         shortcut.save()
                         return self.get_success_url(shortcut)
             # No good matches, let's pick something else:
-            try:
-                shortcut = Shortcut.objects.filter(target=None).first()
-            except ObjectDoesNotExist:  # there is no free shortcuts left
-                shortcut = Shortcut.objects.earliest('updated')  # evict oldest record
+            shortcut = Shortcut.objects.filter(target=None).first()
+            # If there no free space left, let's evict oldest record
+            shortcut = shortcut or Shortcut.objects.earliest('updated')
             shortcut.target = target_url
             shortcut.save()
             return self.get_success_url(shortcut)

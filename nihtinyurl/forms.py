@@ -8,8 +8,8 @@ from .models import Shortcut
 
 class ShortcutURLForm(forms.ModelForm):
     """URL input form."""
-    def __init__( self, *args, **kwargs ):
-        super(ShortcutURLForm, self).__init__( *args, **kwargs )
+    def __init__(self, *args, **kwargs):
+        super(ShortcutURLForm, self).__init__(*args, **kwargs)
         self.fields['target'].label = ''
 
     class Meta:

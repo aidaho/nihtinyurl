@@ -32,6 +32,7 @@ def get_site_root_paths():
 
     return url_patterns
 
+
 def extract_words_from_url(url):
     """Returns individual words from the supplied URL."""
     url = urlparse.urlparse(url)

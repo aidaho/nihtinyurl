@@ -4,6 +4,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 
 from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 from django.db import models
 
 from .library import get_site_root_paths
@@ -47,11 +48,11 @@ class Shortcut(ModelValidationMixin, TimeStampedModel):
     def __unicode__(self):
         return "{0} ({1}): {2}".format(self.keyword, self.hits, self.target)
 
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         # Reset hit counter on target URL update:
         if self.target != self._target_initial:
             self.hits = 0
-        super(Shortcut, self).save(**kwargs)
+        super(Shortcut, self).save(*args, **kwargs)
 
     @classmethod
     def get_keyword_filter_pattern(cls):
@@ -69,6 +70,7 @@ class Shortcut(ModelValidationMixin, TimeStampedModel):
 
     def clean(self):
         self.clean_keyword()
+        self.clean_target()
 
     def clean_keyword(self):
         pattern = self.get_keyword_filter_pattern()
@@ -83,3 +85,10 @@ class Shortcut(ModelValidationMixin, TimeStampedModel):
                     "it clashes with site url pattern '{1}'!".format(
                         self.keyword, url_patterns[self.keyword])
                 )
+
+    def clean_target(self):
+        if self.target:
+            # Django URLField does not provide pre-save validation.
+            # I am as surprised as you are.
+            url_validator = URLValidator()
+            url_validator(self.target)

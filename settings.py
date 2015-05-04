@@ -71,4 +71,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Load machine-specific settings
-from local_settings import *  # isort:skip
+from local_settings import *  # NOQA isort:skip
